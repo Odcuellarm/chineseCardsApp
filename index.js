@@ -10,19 +10,18 @@ app.use(bodyParser.urlencoded({ extended: true }))
 app.use(cors());
 
 
-app.get("/cards", async (req, res) => {
-    try {
-      const id = [1, 2];
-      //loop through the elements in the array
-      id.forEach(()=>{
-        const allcards = await pool.query("SELECT * FROM chinese_chars WHERE char_id = $1", [id]);
-        console.log(allcards);
-        res.json(allcards.rows); //What does this do exactly???
-      })
-    } catch (err) {
-      console.error(err.message);
+app.get("/cards/:id", async (req, res)=> {
+    try{
+        const {id} = req.params
+        const card = await pool.query(
+          "SELECT * FROM chinese_chars WHERE char_id = $1", [id]
+        );
+        console.log(card.rows[0]);
+        res.json(card.rows[0]);
+    }catch (err){
+      console.log(err.message);
     }
-});
+})
 
 
 //The only way to get data fromt he client, is to get it from the request.body object
